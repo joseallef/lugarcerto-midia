@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Lugar Certo — Reel</title>
+<style>
+@font-face{font-family:'Lilita One';src:url(fonts/lilita.woff2) format('woff2');}
+@font-face{font-family:'Nunito';src:url(fonts/nunito.woff2) format('woff2');font-weight:200 1000;}
+:root{
+  --g1:#22b874; --g2:#139256; --g3:#0b6a3d; --g4:#0a4a2b; --floor:#083d23;
+  --y:#FFD43B; --ink:#10261a; --coral:#FF6F5B; --blue:#2F4F8F; --skin:#8B5A3C;
+  --mint:#E8F5EE; --pop:cubic-bezier(.34,1.56,.64,1); --out:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;width:1080px;height:1920px;overflow:hidden}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Nunito,sans-serif;color:#fff;
+  background:radial-gradient(1400px 900px at 85% -10%, #27c47e 0%, transparent 60%), linear-gradient(165deg,var(--g2) 0%, var(--g3) 55%, var(--g4) 100%);}
+.floor{position:absolute;left:0;right:0;bottom:0;height:78px;background:var(--floor);z-index:1}
+.floor:before{content:"";position:absolute;left:0;right:0;top:-3px;height:7px;
+  background:repeating-linear-gradient(90deg,var(--y) 0 26px,transparent 26px 44px)}
+.scene{position:absolute;inset:0;visibility:hidden;z-index:2}
+.abs{position:absolute}
+/* generic animation driver: times are relative to the scene start (--s) */
+.a{animation-name:var(--an);animation-duration:var(--du,.5s);animation-delay:calc(var(--s,0s) + var(--at,0s));
+   animation-fill-mode:both;animation-timing-function:var(--ez,var(--pop));animation-iteration-count:var(--it,1);animation-direction:var(--dir,normal)}
+@keyframes pop{0%{transform:scale(0) rotate(var(--r,0deg));opacity:0}60%{transform:scale(1.12) rotate(var(--r,0deg));opacity:1}100%{transform:scale(1) rotate(var(--r,0deg));opacity:1}}
+@keyframes up{from{transform:translateY(60px) rotate(var(--r,0deg));opacity:0}to{transform:translateY(0) rotate(var(--r,0deg));opacity:1}}
+@keyframes down{from{transform:translateY(-60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes fadeout{from{opacity:1}to{opacity:0}}
+@keyframes left{from{transform:translateX(-120px);opacity:0}to{transform:none;opacity:1}}
+@keyframes right{from{transform:translateX(160px) rotate(var(--r,0deg));opacity:0}to{transform:rotate(var(--r,0deg));opacity:1}}
+@keyframes rise{from{transform:translateY(1000px) rotate(var(--r,0deg))}to{transform:translateY(0) rotate(var(--r,0deg))}}
+@keyframes drop{0%{transform:translateY(-700px) rotate(var(--r,0deg));opacity:1}70%{transform:translateY(12px) rotate(var(--r,0deg))}100%{transform:translateY(0) rotate(var(--r,0deg));opacity:1}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes shake{0%,100%{transform:none}10%{transform:translate(-18px,8px) rotate(-.6deg)}25%{transform:translate(16px,-10px) rotate(.6deg)}40%{transform:translate(-12px,6px)}55%{transform:translate(10px,-4px)}70%{transform:translate(-6px,3px)}85%{transform:translate(3px,-2px)}}
+@keyframes wiggle{0%,100%{transform:rotate(var(--r,0deg))}25%{transform:rotate(calc(var(--r,0deg) - 6deg))}75%{transform:rotate(calc(var(--r,0deg) + 6deg))}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes tap{0%{transform:scale(.3);opacity:0}25%{transform:scale(1);opacity:1}100%{transform:scale(1.5);opacity:0}}
+@keyframes boxon{to{background:#169b5a;border-color:#169b5a}}
+@keyframes dim{to{opacity:.45}}
+@keyframes scan{from{top:8%}to{top:88%}}
+@keyframes confetti{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+@keyframes greenframe{to{border-color:#3ee08f;box-shadow:0 0 40px #3ee08f}}
+@keyframes grow{from{height:0}to{height:var(--h)}}
+@keyframes barfill{from{width:0}to{width:var(--w)}}
+@keyframes scrollup{to{transform:translateY(var(--y2))}}
+@keyframes slidein{from{transform:translateX(100%)}to{transform:none}}
+@keyframes bannerdown{0%{transform:translateY(-140%)}15%{transform:translateY(0)}85%{transform:translateY(0)}100%{transform:translateY(-140%)}}
+@keyframes fly{0%{transform:translate(0,0) scale(.6);opacity:0}15%{opacity:1;transform:translate(calc(var(--fx)*.15),-120px) scale(1.1)}50%{transform:translate(calc(var(--fx)*.5),-230px) scale(1.25)}85%{transform:translate(var(--fx),var(--fy)) scale(.7);opacity:1}100%{transform:translate(var(--fx),var(--fy)) scale(.3);opacity:0}}
+@keyframes jitter{0%,100%{transform:translate(0,0) rotate(-2deg)}30%{transform:translate(6px,-4px) rotate(-1deg)}60%{transform:translate(-5px,3px) rotate(-3deg)}}
+@keyframes stamp{0%{transform:scale(2.4) rotate(var(--r,0deg));opacity:0}60%{transform:scale(.92) rotate(var(--r,0deg));opacity:1}100%{transform:scale(1) rotate(var(--r,0deg));opacity:1}}
+@keyframes zoomin{from{transform:scale(1)}to{transform:scale(1.06)}}
+
+/* type */
+.h1{font-family:'Lilita One';font-size:122px;line-height:1.02;letter-spacing:.5px}
+.h1 .y,.y{color:var(--y)}
+.sub{font-weight:800;font-size:42px;line-height:1.3;max-width:760px}
+.chip{display:inline-block;background:var(--y);color:var(--ink);font-weight:900;font-size:38px;padding:16px 36px;border-radius:999px;
+  box-shadow:0 9px 0 rgba(0,0,0,.2);white-space:nowrap}
+.chip.w{background:#fff}
+.step{display:flex;align-items:center;gap:22px;font-weight:900;font-size:32px;letter-spacing:5px}
+.step b{display:grid;place-items:center;width:72px;height:72px;border-radius:50%;background:var(--y);color:var(--ink);font-size:40px;letter-spacing:0}
+.tagp{display:inline-block;margin-left:14px;background:#fff;color:#139256;font-size:22px;letter-spacing:1px;padding:6px 14px;border-radius:999px;vertical-align:middle}
+.col{position:absolute;left:120px;top:190px;width:1000px}.col .h1{font-size:106px}
+.col .step{margin-bottom:34px}.col .h1{margin-bottom:26px}
+.bubble{position:absolute;background:#fff;color:var(--ink);font-weight:900;font-size:40px;padding:20px 32px;border-radius:34px;white-space:nowrap;box-shadow:0 10px 0 rgba(0,0,0,.15)}
+.bubble:after{content:"";position:absolute;left:44px;bottom:-26px;border:16px solid transparent;border-top:20px solid #fff;border-left:22px solid #fff}
+.bubble.r:after{left:auto;right:50px;border-left-color:transparent;border-right:22px solid #fff}
+
+/* logo */
+.logo{display:flex;align-items:center;gap:18px;font-weight:900;font-size:38px}
+.mark{width:58px;height:58px;border-radius:15px;background:#fff;display:grid;place-items:center;flex:none}
+.mark svg{width:62%;height:62%}
+#bug{position:absolute;left:120px;top:62px;z-index:5}
+
+/* phone */
+.phone{position:absolute;width:420px;height:860px;background:#0d1712;border-radius:60px;padding:14px;
+  box-shadow:0 50px 90px rgba(0,20,10,.45), inset 0 0 0 3px #2c3d33}
+.phone:before{content:"";position:absolute;right:-6px;top:200px;width:6px;height:90px;border-radius:3px;background:#22322a}
+.screen{position:relative;width:100%;height:100%;border-radius:47px;overflow:hidden;background:#fff;color:var(--ink)}
+.cam{position:absolute;left:50%;top:14px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:#0d1712;z-index:20}
+.sbar{display:flex;justify-content:space-between;align-items:center;padding:12px 34px 0;height:46px;font-weight:800;font-size:18px;color:#fff}
+.sbar i{font-style:normal;letter-spacing:2px;font-size:15px}
+.apphead{background:#169b5a;color:#fff;padding:0 28px 22px}
+.apphead h3{font-weight:900;font-size:30px;margin-top:14px}
+.apphead p{font-weight:700;font-size:19px;opacity:.9;margin-top:2px}
+.row{display:flex;align-items:center;gap:16px;height:72px;padding:0 24px;border-bottom:2px solid #eef2ef;position:relative}
+.row .bx{width:32px;height:32px;border-radius:9px;border:3px solid #9fb7a8;flex:none;display:grid;place-items:center;position:relative}
+.row .bx svg{width:20px;height:20px}
+.row .nm{flex:1;font-weight:800;font-size:21px;line-height:1.1}
+.row .nm small{display:block;font-weight:700;font-size:16px;color:#6b7f73;margin-top:3px}
+.row .pr{font-weight:900;font-size:21px}
+.cat{height:48px;display:flex;align-items:center;padding:0 24px;font-weight:900;font-size:17px;letter-spacing:1.5px;color:#169b5a;background:#f3f8f5;text-transform:uppercase}
+.tapc{position:absolute;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;background:rgba(16,38,26,.18);border:3px solid rgba(16,38,26,.35);z-index:9}
+.foot{position:absolute;left:0;right:0;bottom:0;height:116px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 30px 10px}
+.foot small{display:block;font-weight:800;font-size:17px;opacity:.75;letter-spacing:1px}
+.foot .big{font-family:'Lilita One';font-size:46px;color:var(--y)}
+.foot .cnt{font-weight:900;font-size:22px;text-align:right}
+
+/* receipt */
+.receipt{position:absolute;width:400px;background:#fbfaf3;color:#1c1c1c;font-family:'DejaVu Sans Mono',monospace;font-size:20px;padding:30px 30px 46px;
+  box-shadow:0 30px 60px rgba(0,0,0,.3);-webkit-mask:linear-gradient(#000,#000) top/100% calc(100% - 18px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/36px 18px repeat-x}
+.receipt .ln{display:flex;justify-content:space-between;line-height:1.55}
+.receipt hr{border:0;border-top:2px dashed #999;margin:10px 0}
+.qr{display:grid;grid-template-columns:repeat(21,1fr);width:190px;height:190px;margin:16px auto 0}
+.qr i{background:#111}.qr i.o{background:transparent}
+
+/* misc */
+.counter{position:absolute;background:var(--mint);border-radius:36px 36px 0 0}
+.board{position:absolute;background:var(--ink);border:7px solid #fff;border-radius:30px;text-align:center}
+.board small{display:block;font-weight:900;font-size:34px;letter-spacing:6px;color:#cfe9da;margin-top:24px}
+.board .big{font-family:'Lilita One';font-size:150px;color:var(--y);line-height:1.05}
+.paper{position:absolute;background:#fbfaf3;background-image:repeating-linear-gradient(#fbfaf3 0 22px,#cfcfc6 22px 25px,#fbfaf3 25px 36px);transform-origin:top}
+.win{position:absolute;background:#fff;border-radius:26px;color:var(--ink);overflow:hidden;box-shadow:0 40px 80px rgba(0,20,10,.4)}
+.win .top{height:62px;background:#eef3f0;display:flex;align-items:center;gap:10px;padding:0 22px}
+.win .top i{width:16px;height:16px;border-radius:50%;background:#d0dad4}
+.win .url{margin-left:18px;flex:1;height:38px;border-radius:19px;background:#fff;display:flex;align-items:center;padding:0 20px;font-weight:800;font-size:19px;color:#4b5f53}
+.bar{height:34px;border-radius:17px;background:#e9efeb;overflow:hidden;margin:14px 0 30px}
+.bar i{display:block;height:100%;border-radius:17px}
+.card{position:absolute;width:540px;background:#fff;border-radius:30px;color:var(--ink);padding:30px 34px;box-shadow:0 30px 60px rgba(0,20,10,.35)}
+.card h4{font-weight:900;font-size:34px}.card p{font-weight:700;font-size:22px;color:#5d7266;margin-top:4px}
+.card .ok{position:absolute;right:30px;bottom:30px;font-weight:900;font-size:22px;color:#169b5a}
+#wipe{position:absolute;inset:0;z-index:50;pointer-events:none}
+#wipe i{position:absolute;top:-100px;bottom:-100px;width:2700px;transform:skewX(-14deg)}
+#flash{position:absolute;inset:0;background:#fff;z-index:49;opacity:0}
+.emo{position:absolute;font-size:110px;line-height:1}
+.cf{position:absolute;width:16px;height:30px;border-radius:5px}
+
+.camera{position:absolute;inset:0;transform-origin:50% 55%;will-change:transform}
+.w{display:inline-block}
+@keyframes wordin{0%{transform:translateY(90px) rotate(10deg) scale(.4);opacity:0}100%{transform:none;opacity:1}}
+#amb{position:absolute;inset:0;z-index:1;pointer-events:none}
+.ambi{position:absolute;left:0;top:0;display:grid;place-items:center}
+@keyframes spin{from{transform:rotate(0) scale(0)}20%{transform:rotate(10deg) scale(1)}to{transform:rotate(40deg) scale(1.1)}}
+@keyframes rollin{from{transform:translateX(900px)}to{transform:none}}
+
+.floor{height:300px}
+.rt{position:absolute;left:70px;top:290px;width:940px}.rt .h1{font-size:100px}
+#bug{left:70px;top:170px;transform:scale(.85);transform-origin:left top}
+#vhs{position:absolute;inset:0;z-index:70;display:none;background:repeating-linear-gradient(rgba(0,0,0,.2) 0 3px,transparent 3px 7px)}
+#vhs .vt{position:absolute;left:70px;top:620px;font-family:'DejaVu Sans Mono',monospace;font-weight:700;font-size:74px;color:#fff;text-shadow:5px 0 #ff3b6b,-5px 0 #3bd5ff}
+#vhs .vc{position:absolute;left:70px;top:715px;font-family:'DejaVu Sans Mono',monospace;font-weight:700;font-size:44px;color:#fff;opacity:.9}
+#vhs .vband{position:absolute;left:0;right:0;height:120px;background:linear-gradient(transparent,rgba(255,255,255,.45),transparent)}
+#vhs .vq{position:absolute;left:0;right:0;top:820px;text-align:center}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="amb"></div>
+  <div class="floor"></div>
+<!-- REEL 1080x1920 · "POV: você foi no mercado SÓ pelo pão" · inserted into reel.html by build_reel.py -->
+<!-- R1 · HOOK -->
+<section class="scene" id="r1" data-start="0" data-end="2.6" data-cam='[[0,1.1,0,60],[2.6,1.0,0,0]]'>
+  <div class="rt">
+    <div class="a" style="--an:pop;--at:.05s;--r:-4deg;display:inline-block"><div class="chip" style="font-size:52px;font-family:'Lilita One';font-weight:400">POV:</div></div>
+    <div class="h1 a" style="--an:up;--at:.25s;margin-top:26px">você foi no mercado</div>
+    <div class="h1 y a" style="--an:up;--at:.6s">SÓ pelo pão 🥖</div>
+  </div>
+  <div class="abs" style="left:367px;top:962px" data-leo='{"id":"a1","scale":1.15,"x":[[0,-760],[1.1,0]],"arms":{"r":[[0,10],[1.1,10],[1.35,-150]],"l":[[0,-10]]},"mouth":[[0,"grin"]],"eyes":[[0,"happy"],[1.2,"n"]]}'></div>
+  <div class="abs a" style="--an:pop;--at:1.4s;left:640px;top:880px"><div class="bubble r" style="font-size:46px">só ele, juro.</div></div>
+</section>
+
+<!-- R2 · VOLTEI COM -->
+<section class="scene" id="r2" data-start="2.6" data-end="5.2" data-cam='[[0,1.0,0,0],[1.9,1.03,0,0],[2.1,1.1,60,-40],[2.6,1.12,60,-40]]'>
+  <div class="rt"><div class="h1 a" style="--an:up;--at:.05s">Voltei com:</div></div>
+  <div class="abs" style="left:70px;top:430px;display:flex;flex-direction:column;gap:22px;align-items:flex-start">
+    <div class="a" style="--an:left;--at:.35s"><div class="chip w">🧀 queijo ×3</div></div>
+    <div class="a" style="--an:left;--at:.6s"><div class="chip w">🦆 pato inflável ×1</div></div>
+    <div class="a" style="--an:left;--at:.85s"><div class="chip w">🍉 melancia ×1</div></div>
+    <div class="a" style="--an:left;--at:1.1s"><div class="chip w">🍫 chocolate ×4</div></div>
+    <div class="a" style="--an:stamp;--at:1.85s;--r:-5deg"><div class="chip" style="background:var(--coral);color:#fff;font-size:56px;font-family:'Lilita One';font-weight:400">🥖 pão ×0</div></div>
+  </div>
+  <div class="abs" style="left:40px;top:1105px" data-leo='{"id":"a2","scale":0.9,"arms":{"r":[[0,15],[1.9,15],[2.15,163]],"l":[[0,-12]]},"mouth":[[0,"smile"],[1.85,"o"],[2.1,"flat"]],"eyes":[[0,"n"],[1.85,"big"],[2.1,"n"]],"brow":[[0,"n"],[1.85,"up"],[2.1,"sad"]]}'></div>
+  <div class="abs" style="left:440px;top:1150px;width:600px;height:470px">
+    <div id="rpile"></div>
+    <svg class="abs" style="left:0;top:180px" width="580" height="290" viewBox="0 0 640 310">
+      <path d="M10 20 H90 L130 220 H560 L610 60 H110" fill="none" stroke="#e9f3ee" stroke-width="16" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M112 60 H610 L560 220 H130 Z" fill="rgba(255,255,255,.18)" stroke="#e9f3ee" stroke-width="10" stroke-linejoin="round"/>
+      <path d="M200 60 L215 220 M290 60 L295 220 M380 60 L375 220 M470 60 L455 220 M122 115 H592 M135 170 H574" stroke="#e9f3ee" stroke-width="6" opacity=".8"/>
+      <circle cx="180" cy="275" r="26" fill="#10261a" stroke="#e9f3ee" stroke-width="8"/><circle cx="510" cy="275" r="26" fill="#10261a" stroke="#e9f3ee" stroke-width="8"/>
+      <path d="M130 220 L150 250 H540" fill="none" stroke="#e9f3ee" stroke-width="10" stroke-linecap="round"/>
+    </svg>
+  </div>
+</section>
+
+<!-- R3 · CAIXA -->
+<section class="scene" id="r3" data-start="5.2" data-end="7.5" data-cam='[[0,1.0,0,0],[1.45,1.04,0,0],[1.6,1.14,0,-60],[2.3,1.17,0,-70]]'>
+  <div class="abs a" style="inset:0;--an:shake;--at:1.55s;--du:.6s;--ez:linear">
+    <div class="paper a" style="--an:grow;--at:.3s;--du:1.6s;--ez:cubic-bezier(.5,0,.9,.6);--h:900px;left:430px;top:540px;width:220px;z-index:1"></div>
+    <div class="board" style="left:90px;top:290px;width:900px;height:260px;z-index:3"><small>TOTAL NO CAIXA</small><div class="big" style="font-size:156px" data-count="0,487.9,0.25,1.3" data-ease="in">R$ 0,00</div></div>
+    <svg class="abs a" style="left:90px;top:780px;--an:spin;--at:1.5s;--du:1.5s;--ez:var(--out)" width="900" height="900" viewBox="-450 -450 900 900" id="rburst"></svg>
+    <div class="abs" style="left:367px;top:962px;z-index:2" data-leo='{"id":"a3","scale":1.15,"hop":[1.5],"arms":{"r":[[0,15],[1.45,15],[1.6,-155]],"l":[[0,-15],[1.45,-15],[1.6,155]]},"mouth":[[0,"smile"],[0.8,"flat"],[1.5,"o"]],"eyes":[[0,"n"],[0.8,"side"],[1.5,"big"]]}'></div>
+    <div class="abs a" style="--an:pop;--at:1.55s;left:560px;top:760px;z-index:4"><div class="bubble" style="font-size:72px;font-family:'Lilita One';font-weight:400">QUANTO?!</div></div>
+    <div class="abs a" style="--an:pop;--at:1.7s;left:280px;top:900px;z-index:4"><span class="emo" style="font-size:80px">💦</span></div>
+  </div>
+</section>
+
+<!-- R4 · LISTA -->
+<section class="scene" id="r4" data-start="9" data-end="12.6">
+  <div class="rt"><div class="h1 a" style="--an:up;--at:.15s">Lista na mão,</div><div class="h1 y a" style="--an:up;--at:.4s">total na hora.</div></div>
+  <div class="phone a" style="--an:rise;--at:.1s;--du:.8s;--ez:var(--out);left:300px;top:620px;width:480px;height:940px;--r:-2deg">
+    <div class="screen"><div class="cam"></div>
+      <div class="apphead"><div class="sbar">9:41<i>▂▄▆ ◔ ▮</i></div><h3>Lista da semana</h3><p>3 itens · Padaria e mercearia</p></div>
+      <div style="position:absolute;top:166px;left:0;right:0;bottom:116px;overflow:hidden"><div id="rlist4" style="position:relative"></div></div>
+      <div class="foot"><div><small>NO CARRINHO</small><div class="big" data-steps='[[0,0],[1.0,8.45],[1.6,38.39],[2.2,57.29]]'>R$ 0,00</div></div>
+        <div class="cnt"><span data-steps='[[0,0],[1.0,1],[1.6,2],[2.2,3]]' data-fmt="int">0</span> de 3<br><span style="color:#3ee08f">✓ itens</span></div></div>
+    </div>
+  </div>
+  <div class="abs a" style="--an:stamp;--at:2.5s;--r:-4deg;left:60px;top:1330px;z-index:5"><div class="chip" style="font-size:42px">pato inflável? não tá na lista 🦆🚫</div></div>
+</section>
+
+<!-- R5 · NOTA -->
+<section class="scene" id="r5" data-start="12.6" data-end="16">
+  <div class="rt"><div class="h1 a" style="--an:up;--at:.15s">No caixa,</div><div class="h1 y a" style="--an:up;--at:.4s">escaneia a nota.</div></div>
+  <div class="receipt a" style="--an:up;--at:.2s;--du:.6s;--r:-9deg;left:30px;top:880px;transform-origin:top left;scale:.78" id="rrc"></div>
+  <div class="phone a" style="--an:rise;--at:.1s;--du:.8s;--ez:var(--out);left:420px;top:620px;width:470px;height:930px;--r:3deg">
+    <div class="screen" style="background:#0c1410;color:#fff"><div class="cam"></div>
+      <div class="sbar">9:41<i>▂▄▆ ◔ ▮</i></div>
+      <div style="text-align:center;font-weight:900;font-size:26px;margin-top:16px">Escanear nota fiscal</div>
+      <div style="position:absolute;left:44px;right:44px;top:180px;height:440px">
+        <div class="abs a" style="inset:30px;--an:jitter;--du:1s;--it:2;--ez:ease-in-out;display:grid;place-items:center">
+          <div style="background:#e9e7dc;padding:22px;border-radius:6px"><div class="qr" id="rqrb" style="margin:0;width:250px;height:250px"></div></div></div>
+        <div class="abs a" style="inset:0;border:6px solid rgba(255,255,255,.85);border-radius:30px;--an:greenframe;--at:1.9s;--du:.2s;--ez:linear"></div>
+        <div class="abs a" style="left:16px;right:16px;height:5px;background:#3ee08f;box-shadow:0 0 22px 6px rgba(62,224,143,.7);--an:scan;--du:.55s;--at:.6s;--it:2.4;--dir:alternate;--ez:ease-in-out"></div>
+      </div>
+      <div class="abs a" style="--an:up;--at:2.0s;left:34px;right:34px;top:690px;background:#fff;color:var(--ink);border-radius:24px;padding:18px 22px;text-align:center">
+        <div style="font-weight:900;font-size:30px">✓ Nota lida</div><div style="font-weight:700;font-size:20px;color:#5d7266">3 itens · R$ 57,29</div></div>
+      <div class="abs a" style="inset:0;background:#fff;color:var(--ink);--an:slidein;--at:2.6s;--du:.5s;--ez:var(--out)">
+        <div class="apphead"><div class="sbar">9:41<i>▂▄▆ ◔ ▮</i></div><h3>Compra de hoje</h3><p>Importada da nota · 3 itens</p></div>
+        <div id="rlist5"></div></div>
+    </div>
+  </div>
+  <div class="abs a" style="--an:pop;--at:2.3s;--r:-4deg;left:60px;top:1400px;z-index:5"><div class="chip">sem digitar nada 👍</div></div>
+</section>
+
+<!-- R6 · A DOIS -->
+<section class="scene" id="r6" data-start="16" data-end="19">
+  <div class="rt"><div class="h1 a" style="--an:up;--at:.15s">E a Bia viu</div><div class="h1 y a" style="--an:up;--at:.4s">na hora. 👥</div></div>
+  <div class="abs a" style="--an:fade;--at:.3s;left:300px;top:560px;width:480px;text-align:center;font-weight:900;font-size:32px">📍 celular da Bia, em casa</div>
+  <div class="phone a" style="--an:rise;--at:.1s;--du:.8s;--ez:var(--out);left:300px;top:620px;width:480px;height:940px;--r:-2deg">
+    <div class="screen"><div class="cam"></div><div id="rduo"></div></div>
+  </div>
+  <div class="abs a" style="--an:pop;--at:2.0s;--r:3deg;left:60px;top:1400px;z-index:5"><div class="chip w">ninguém compra leite em dobro 🥛</div></div>
+</section>
+
+<!-- R7 · PAYOFF -->
+<section class="scene" id="r7" data-start="19" data-end="22" data-cam='[[0,1.0,0,0],[3,1.06,0,-20]]'>
+  <div class="rt"><div class="h1 a" style="--an:up;--at:.1s">Foi pelo pão.</div><div class="h1 y a" style="--an:up;--at:.4s">Voltou com o pão. ✓</div></div>
+  <div class="card a" style="--an:up;--at:.7s;--r:-2deg;left:110px;top:620px;width:860px;padding:34px 44px">
+    <div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:30px;margin:0">antes</p><div style="position:relative;font-family:'Lilita One';font-size:64px;color:#9aa8a0">R$ 487,90<i class="a" style="position:absolute;left:-6px;top:50%;height:8px;background:var(--coral);border-radius:4px;--an:barfill;--at:1.1s;--du:.35s;--ez:ease-out;--w:108%"></i></div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><p style="font-size:30px;margin:0;color:#169b5a;font-weight:900">com o Lugar Certo</p><div class="a" style="--an:pop;--at:1.4s;font-family:'Lilita One';font-size:84px;color:#169b5a">R$ 57,29</div></div>
+  </div>
+  <div class="abs" style="left:367px;top:962px" data-leo='{"id":"a7","scale":1.15,"bags":true,"x":[[0,700],[0.8,0]],"hop":[1.4,2.1],"arms":{"r":[[0,8]],"l":[[0,-8]]},"mouth":[[0,"grin"]],"eyes":[[0,"n"],[1.4,"happy"]]}'></div>
+</section>
+
+<!-- R8 · END -->
+<section class="scene" id="r8" data-start="22" data-end="26.1" data-cam='[[0,1.04,0,0],[4,1.0,0,0]]'>
+  <div class="abs" style="left:0;right:0;top:330px;text-align:center">
+    <div class="a" style="--an:pop;--at:.1s;--du:.6s;display:inline-block"><div class="mark" style="width:200px;height:200px;border-radius:52px;box-shadow:0 26px 50px rgba(0,0,0,.25)"><svg viewBox="0 0 24 24"><path class="a" d="M5 12.5 L10 17.5 L19.5 7" fill="none" stroke="#169b5a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="24" stroke-dashoffset="24" style="--an:draw;--at:.45s;--du:.35s;--ez:ease-out"/></svg></div></div>
+    <div class="h1 a" style="--an:up;--at:.5s;font-size:130px;margin-top:26px">Lugar Certo</div>
+    <div class="sub a" style="--an:up;--at:.8s;max-width:none;font-size:48px">Suas compras no <span class="y">lugar certo.</span></div>
+    <div class="a" style="--an:pop;--at:1.1s;margin-top:46px;display:inline-block;background:#fff;color:var(--ink);border-radius:999px;padding:26px 52px;font-weight:900;font-size:50px;box-shadow:0 12px 0 rgba(0,0,0,.2)">Baixe grátis 👉 link na bio</div>
+    <div class="a" style="--an:up;--at:1.4s;margin-top:40px;font-weight:900;font-size:40px;color:var(--y)">14 dias de Premium grátis · sem cartão</div>
+    <div class="a" style="--an:fade;--at:1.8s;margin-top:18px;font-weight:700;font-size:24px;opacity:.85">Nota fiscal e lista a dois são recursos Premium.</div>
+  </div>
+  <div class="abs" style="left:70px;top:1190px" data-leo='{"id":"a8","scale":0.75,"phone":true,"hop":[0.3],"arms":{"r":[[0,15],[0.5,-150]],"l":[[0,-15],[0.6,140],[1.0,115],[1.4,140],[1.8,115],[2.2,140],[2.6,-15]]},"mouth":[[0,"grin"]],"eyes":[[0,"happy"],[1.0,"n"]]}'></div>
+</section>
+
+<div id="vhs"><div class="vt">◀◀ REBOBINA</div><div class="vc" id="vtc">00:07:15</div><div class="vband" id="vband"></div>
+  <div class="vq"><div class="chip" style="font-size:54px;font-family:'Lilita One';font-weight:400">e se fosse com o Lugar Certo?</div></div></div>
+
+<div id="bug" class="logo"><div class="mark"><svg viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19.5 7" fill="none" stroke="#169b5a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Lugar Certo</div>
+  <div id="flash"></div>
+  <div id="wipe"><i id="w1" style="background:var(--y)"></i><i id="w2" style="background:var(--g4)"></i></div>
+</div>
+
+<script>
+/* ---------------- helpers ---------------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ease={inout:p=>p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2,out:p=>1-Math.pow(1-p,3),in:p=>p*p*p};
+const brl=v=>'R$ '+v.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const CHECK='<svg viewBox="0 0 24 24"><path d="M4.5 12.5 L10 18 L19.5 6.5" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
+
+/* ---------------- Léo (brand mascot, v2) ---------------- */
+function arm(side,bag,phone){
+  const x=side==='l'?94:206;
+  return `<g transform="translate(${x},262)"><g data-arm="${side}">
+    <rect x="-17" y="40" width="34" height="104" rx="17" fill="url(#skin)"/>
+    <path d="M-25 -14 Q0 -30 25 -14 L23 62 Q0 72 -23 62 Z" fill="url(#shirt)"/>
+    <circle cx="0" cy="146" r="22" fill="url(#skin)"/>
+    ${phone?`<g transform="translate(0,150) rotate(180)"><rect x="-22" y="-8" width="44" height="80" rx="9" fill="#0d1712"/><rect x="-17" y="-2" width="34" height="66" rx="5" fill="#3ee08f"/><path d="M-8 30 L-2 36 L9 22" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></g>`:''}
+    ${bag?`<g transform="translate(0,150)"><path d="M-40 14 H40 L33 112 Q0 120 -33 112 Z" fill="${side==='l'?'#F08A24':'#fff'}"/><path d="M-18 16 Q0 -22 18 16" fill="none" stroke="${side==='l'?'#c96a12':'#c9d3cd'}" stroke-width="7"/><text x="0" y="82" font-size="44" text-anchor="middle">${side==='r'?'🥖':'🧀'}</text></g>`:''}
+  </g></g>`;
+}
+function leoSVG(o){
+  const hair=[[78,118,30],[86,82,32],[110,58,34],[146,46,36],[184,54,34],[212,80,32],[222,116,28],[96,58,22],[200,42,22],[150,30,26],[120,36,24],[68,100,20],[232,98,20]];
+  const hl=[[118,52,9],[150,38,10],[188,50,9],[92,80,8],[212,72,8]];
+  const shoe=(flip)=>flip
+    ?`<path d="M-48 136 Q-46 114 -22 112 L16 112 Q36 112 36 128 L36 150 L-48 150 Z" fill="#fff"/><rect x="-48" y="140" width="84" height="10" rx="4" fill="#d9e2dc"/><rect x="-34" y="124" width="62" height="6" rx="3" fill="var(--y)"/>`
+    :`<path d="M-36 128 Q-36 112 -16 112 L22 112 Q46 114 48 136 L48 150 L-36 150 Z" fill="#fff"/><rect x="-36" y="140" width="84" height="10" rx="4" fill="#d9e2dc"/><rect x="-28" y="124" width="62" height="6" rx="3" fill="var(--y)"/>`;
+  const leg=(side,x,flip)=>`<g transform="translate(${x},420)"><g data-leg="${side}"><rect x="-30" y="-6" width="60" height="146" rx="22" fill="url(#pants)"/>${shoe(flip)}</g></g>`;
+  return `<svg width="${300*o.scale}" height="${640*o.scale}" viewBox="0 0 300 640" style="overflow:visible">
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9c6646"/><stop offset="1" stop-color="#7a4a2f"/></linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8370"/><stop offset="1" stop-color="#f05a45"/></linearGradient>
+    <linearGradient id="pants" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a5ea3"/><stop offset="1" stop-color="#2a467f"/></linearGradient>
+    <radialGradient id="face" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#a87050"/><stop offset="1" stop-color="#83512f"/></radialGradient>
+  </defs>
+  <ellipse data-shadow cx="150" cy="572" rx="110" ry="16" fill="rgba(0,0,0,.22)"/>
+  <g data-body>
+  ${leg('l',118,false)}${leg('r',182,true)}
+  ${arm('l',o.bags,false)}
+  <path d="M74 286 Q76 238 122 232 L178 232 Q224 238 226 286 L230 432 Q150 446 70 432 Z" fill="url(#shirt)"/>
+  <rect x="160" y="300" width="40" height="34" rx="8" fill="rgba(0,0,0,.08)"/>
+  <rect x="70" y="420" width="160" height="22" rx="8" fill="#2a467f"/>
+  <g data-head>
+   <rect x="134" y="196" width="32" height="44" rx="10" fill="#7a4a2f"/>
+   <path d="M124 236 Q150 254 176 236" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+   <ellipse cx="70" cy="150" rx="14" ry="18" fill="#83512f"/><ellipse cx="230" cy="150" rx="14" ry="18" fill="#83512f"/>
+   <ellipse cx="150" cy="140" rx="80" ry="84" fill="url(#face)"/>
+   ${hair.map(h=>`<circle cx="${h[0]}" cy="${h[1]}" r="${h[2]}" fill="#1d130e"/>`).join('')}
+   ${hl.map(h=>`<circle cx="${h[0]}" cy="${h[1]}" r="${h[2]}" fill="#3a2a22"/>`).join('')}
+   <ellipse cx="102" cy="176" rx="14" ry="8" fill="#ff7b6b" opacity=".35"/><ellipse cx="198" cy="176" rx="14" ry="8" fill="#ff7b6b" opacity=".35"/>
+   <path d="M76 150 Q74 230 150 234 Q226 230 224 150 Q214 186 182 190 Q150 178 118 190 Q86 186 76 150 Z" fill="#1d130e"/>
+   <g data-mouth="smile"><path d="M124 198 Q150 230 176 198 Q150 206 124 198 Z" fill="#fff"/><path d="M136 214 Q150 222 164 214 Q150 218 136 214Z" fill="#e85d5d"/></g>
+   <g data-mouth="flat"><path d="M130 206 Q150 198 170 206" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/></g>
+   <g data-mouth="o"><ellipse cx="150" cy="210" rx="18" ry="22" fill="#fff"/><ellipse cx="150" cy="213" rx="11" ry="15" fill="#5a1f1a"/></g>
+   <g data-mouth="grin"><path d="M116 194 Q150 240 184 194 Z" fill="#fff"/><path d="M134 220 Q150 230 166 220 Q150 226 134 220Z" fill="#e85d5d"/></g>
+   <g data-eyesw>
+    <g data-eyes="n"><ellipse cx="120" cy="144" rx="11" ry="12" fill="#fff"/><ellipse cx="180" cy="144" rx="11" ry="12" fill="#fff"/><circle cx="122" cy="146" r="7" fill="#1d130e"/><circle cx="182" cy="146" r="7" fill="#1d130e"/><circle cx="125" cy="142" r="2.5" fill="#fff"/><circle cx="185" cy="142" r="2.5" fill="#fff"/></g>
+    <g data-eyes="side"><ellipse cx="120" cy="146" rx="11" ry="7" fill="#fff"/><ellipse cx="180" cy="146" rx="11" ry="7" fill="#fff"/><circle cx="128" cy="146" r="6" fill="#1d130e"/><circle cx="188" cy="146" r="6" fill="#1d130e"/></g>
+    <g data-eyes="big"><circle cx="120" cy="142" r="16" fill="#fff"/><circle cx="180" cy="142" r="16" fill="#fff"/><circle cx="120" cy="142" r="6" fill="#1d130e"/><circle cx="180" cy="142" r="6" fill="#1d130e"/></g>
+    <g data-eyes="happy"><path d="M108 148 Q120 134 132 148 M168 148 Q180 134 192 148" fill="none" stroke="#1d130e" stroke-width="6" stroke-linecap="round"/></g>
+   </g>
+   <g data-brow="n"><path d="M104 112 Q120 104 136 110 M164 110 Q180 104 196 112" stroke="#1d130e" stroke-width="7" fill="none" stroke-linecap="round"/></g>
+   <g data-brow="up"><path d="M102 100 Q120 88 138 98 M162 98 Q180 88 198 100" stroke="#1d130e" stroke-width="7" fill="none" stroke-linecap="round"/></g>
+   <g data-brow="side"><path d="M104 122 L138 126 M162 126 L198 116" stroke="#1d130e" stroke-width="7" fill="none" stroke-linecap="round"/></g>
+   <g data-brow="sad"><path d="M104 118 Q120 114 136 106 M164 106 Q180 114 196 118" stroke="#1d130e" stroke-width="7" fill="none" stroke-linecap="round"/></g>
+   <circle cx="120" cy="144" r="24" fill="rgba(255,255,255,.14)" stroke="#121212" stroke-width="7"/>
+   <circle cx="180" cy="144" r="24" fill="rgba(255,255,255,.14)" stroke="#121212" stroke-width="7"/>
+   <path d="M106 134 Q111 127 119 126 M166 134 Q171 127 179 126" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".75"/>
+   <path d="M144 142 Q150 136 156 142 M96 140 L78 134 M204 140 L222 134" fill="none" stroke="#121212" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  ${arm('r',o.bags,o.phone)}
+  </g>
+  </svg>`;
+}
+$$('[data-leo]').forEach(el=>{const o=JSON.parse(el.dataset.leo);el.innerHTML=leoSVG(o);el._leo=o;});
+
+/* ---------------- list rows ---------------- */
+function rows(data,opts={}){let h='',y=0;const taps=[];
+  data.forEach((r,i)=>{
+    if(r[0]==='cat'){h+=`<div class="cat">${r[1]}</div>`;y+=48;return;}
+    const at=r[3];
+    h+=`<div class="row"><div class="bx ${at!=null?'a':''}" style="${at!=null?`--an:boxon;--at:${at}s;--du:.18s;--ez:linear`:''}">${at!=null?`<span class="a" style="--an:pop;--at:${at}s;--du:.3s;display:grid">${CHECK}</span>`:''}</div>
+      <div class="nm ${at!=null&&opts.dim?'a':''}" style="--an:dim;--at:${(at||0)+.15}s;--du:.3s;--ez:linear">${r[0]}<small>${r[1]}</small></div><div class="pr">${r[2]?'R$ '+r[2]:''}</div></div>`;
+    if(r[4])taps.push([y+36,r[3]]);y+=72;});
+  taps.forEach(([ty,at])=>{h+=`<div class="tapc a" style="left:52px;top:${ty}px;--an:tap;--at:${at-.12}s;--du:.55s;--ez:ease-out"></div>`;});
+  return h;}
+/* ---------------- receipt + QR ---------------- */
+function qr(el,s){seed=s;let h='';for(let y=0;y<21;y++)for(let x=0;x<21;x++){
+  const f=(cx,cy)=>{const dx=x-cx,dy=y-cy;if(dx<0||dy<0||dx>6||dy>6)return null;return (dx===0||dy===0||dx===6||dy===6||(dx>=2&&dx<=4&&dy>=2&&dy<=4));};
+  let v=f(0,0);if(v===null)v=f(14,0);if(v===null)v=f(0,14);if(v===null)v=rnd()>.5;h+=`<i class="${v?'':'o'}"></i>`;}el.innerHTML=h;}
+
+/* ---------------- reel builders ---------------- */
+(function(){const items=[['🧀',60,170],['🧀',160,185],['🧀',260,175],['🍉',360,150],['🦆',190,50,1],['🍫',90,80],['🍫',330,60],['🍫',420,95],['🥤',460,30],['🍪',280,-30]];
+  $('#rpile').innerHTML=items.map((it,i)=>`<div class="emo a" style="--an:drop;--at:${.3+i*.14}s;--du:.45s;--ez:cubic-bezier(.5,0,.5,1.4);--r:${(rnd()*40-20).toFixed(0)}deg;left:${it[1]}px;top:${it[2]}px;font-size:${it[3]?140:96}px">${it[0]}</div>`).join('');})();
+$('#rburst').innerHTML=Array.from({length:16},(_,i)=>{const a=i*0.3927,c=Math.cos,s=Math.sin;return `<path d="M0 0 L${(470*c(a-.06)).toFixed(0)} ${(470*s(a-.06)).toFixed(0)} L${(470*c(a+.06)).toFixed(0)} ${(470*s(a+.06)).toFixed(0)} Z" fill="#FFD43B" opacity=".35"/>`}).join('');
+$('#rlist4').innerHTML=rows([['cat','🥖 Padaria'],['Pão francês','0,5 kg','8,45',1.0,1],['cat','🥫 Mercearia'],['Leite integral 1 L','6 un.','29,94',1.6,1],['Café 500 g','1 un.','18,90',2.2,1]],{dim:true});
+$('#rlist5').innerHTML=rows([['Pão francês','0,5 kg','8,45',2.95],['Leite integral 1 L','6 un.','29,94',3.05],['Café 500 g','1 un.','18,90',3.15]]).replace(/class="row"/g,'class="row a" style="--an:right;--at:2.75s;--du:.4s"');
+$('#rrc').innerHTML=`<div style="text-align:center;font-weight:700">SUPERMERCADO<br>NFC-e · HOJE</div><hr>
+ <div class="ln"><span>PAO FRANCES</span><span>8,45</span></div><div class="ln"><span>LEITE 1L x6</span><span>29,94</span></div>
+ <div class="ln"><span>CAFE 500G</span><span>18,90</span></div><hr><div class="ln" style="font-weight:700"><span>TOTAL</span><span>57,29</span></div><div class="qr" id="rqr"></div>`;
+qr($('#rqr'),5);qr($('#rqrb'),5);
+(function(){
+  const items=[['Café 500 g','1 un.',-1],['Leite integral 1 L','6 un.',0.75],['Pão francês','0,5 kg',1.85]];
+  let h=`<div class="apphead"><div class="sbar">9:41<i>▂▄▆ ◔ ▮</i></div><h3>Casa · semana</h3><p>👥 Léo e Bia · lista compartilhada</p></div>`;
+  items.forEach(it=>{h+=`<div class="row"><div class="bx a" style="--an:boxon;--at:${it[2]}s;--du:.18s;--ez:linear"><span class="a" style="--an:pop;--at:${it[2]}s;--du:.3s;display:grid">${CHECK}</span></div><div class="nm">${it[0]}<small>${it[1]}</small></div></div>`;});
+  [[0.55,'Léo marcou: Leite integral ✓'],[1.65,'Léo marcou: Pão francês ✓ (finalmente!)']].forEach(([at,txt])=>h+=`<div class="abs a" style="left:14px;right:14px;top:40px;z-index:12;background:#fff;border-radius:22px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.25);--an:bannerdown;--at:${at}s;--du:1.15s;--ez:ease-out">
+      <div class="mark" style="width:46px;height:46px;border-radius:12px;background:#169b5a"><svg viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19.5 7" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div style="font-weight:800;font-size:19px;line-height:1.25"><b style="font-weight:900">Lugar Certo</b><br>${txt}</div></div>`);
+  $('#rduo').innerHTML=h;})();
+/* ---------------- motion engine ---------------- */
+const scenes=$$('.scene');
+scenes.forEach(s=>{
+  s.style.setProperty('--s',s.dataset.start+'s');
+  const cam=document.createElement('div');cam.className='camera';
+  while(s.firstChild)cam.appendChild(s.firstChild);s.appendChild(cam);s._cam=cam;
+  const dur=+s.dataset.end-+s.dataset.start;
+  s._camk=s.dataset.cam?JSON.parse(s.dataset.cam):[[0,1.0,30,0],[dur,1.07,-30,-10]];
+});
+/* kinetic headline: word by word */
+$$('.h1.a').forEach(el=>{
+  const at=parseFloat(el.style.getPropertyValue('--at'))||0;
+  const words=el.innerHTML.trim().split(/\s+/);
+  el.classList.remove('a');el.style.removeProperty('--an');
+  el.innerHTML=words.map((w,i)=>`<span class="a w" style="--an:wordin;--du:.55s;--at:${(at+i*.07).toFixed(2)}s">${w}</span>`).join(' ');
+});
+/* ambient parallax shapes */
+(function(){const amb=$('#amb');let h='';for(let i=0;i<16;i++){const k=i%4;const sz=40+rnd()*90;
+  const inner=k===0?`<svg viewBox="0 0 24 24" width="60%" height="60%"><path d="M5 12.5 L10 17.5 L19.5 7" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`:'';
+  h+=`<div class="ambi" data-x="${(rnd()*2200).toFixed(0)}" data-y="${(rnd()*900).toFixed(0)}" data-v="${(20+rnd()*60).toFixed(1)}" data-p="${(rnd()*6).toFixed(2)}"
+     style="width:${sz}px;height:${sz}px;border-radius:${k===1?'50%':k===2?'30%':'28%'};border:${k===3?'0':'5px solid rgba(255,255,255,.5)'};background:${k===3?'rgba(255,212,59,.5)':'transparent'};opacity:${(.10+rnd()*.12).toFixed(2)}">${inner}</div>`;}
+  amb.innerHTML=h;})();
+const AMB=$$('.ambi').map(el=>({el,x:+el.dataset.x,y:+el.dataset.y,v:+el.dataset.v,p:+el.dataset.p}));
+const FLOATS=$$('.phone,.card,.win,.chip,.bubble,.board,.receipt').map((el,i)=>({el,ph:i*1.7,big:el.matches('.phone,.win,.board,.receipt')}));
+
+const sStart=el=>{const s=el.closest('.scene');return s?+s.dataset.start:0};
+function key(k,t){
+  if(t<=k[0][0])return k[0][1];
+  for(let i=1;i<k.length;i++){if(t<k[i][0]){const p=(t-k[i-1][0])/(k[i][0]-k[i-1][0]);return k[i-1][1]+(k[i][1]-k[i-1][1])*ease.inout(p);}}
+  return k[k.length-1][1];}
+function keyv(k,t,j){return key(k.map(e=>[e[0],e[j]]),t)}
+function step(k,t){let v=k[0][1];k.forEach(e=>{if(t>=e[0])v=e[1]});return v;}
+const WHIPS={2.6:1,5.2:-1,12.6:1,16:-1,19:1}, WIPES=[22], FLASH=[9.0];
+const LEOS=$$('[data-leo]').map((el,i)=>({el,i,o:el._leo,s0:sStart(el),
+  arms:[...el.querySelectorAll('[data-arm]')],legs:[...el.querySelectorAll('[data-leg]')],head:el.querySelector('[data-head]'),
+  ew:el.querySelector('[data-eyesw]'),m:[...el.querySelectorAll('[data-mouth]')],e:[...el.querySelectorAll('[data-eyes]')],b:[...el.querySelectorAll('[data-brow]')]}));
+const COUNTS=$$('[data-count]').map(el=>({el,s0:sStart(el),v:el.dataset.count.split(',').map(Number),ez:ease[el.dataset.ease||'out'],f:el.dataset.fmt}));
+const STEPS=$$('[data-steps]').map(el=>({el,s0:sStart(el),k:JSON.parse(el.dataset.steps),f:el.dataset.fmt}));
+const fmt=(v,f)=>f==='int'?String(Math.round(v)):f==='int0'?'R$ '+Math.round(v):brl(v);
+const BROW={o:'up',flat:'sad',grin:'n',smile:'n'};
+
+function render(t){
+  /* scenes + camera + whip-pan transitions */
+  scenes.forEach(s=>{const a=+s.dataset.start,b=+s.dataset.end;
+    const vis=t>=a&&t<b;s.style.visibility=vis?'visible':'hidden';if(!vis)return;
+    const lt=t-a,k=s._camk;let sc=keyv(k,lt,1),cx=keyv(k,lt,2),cy=keyv(k,lt,3);
+    let off=0,blur=0;
+    if(WHIPS[b]&&t>b-.22){const p=(t-(b-.22))/.22;off=-WHIPS[b]*p*p*1100;blur=p*26;}
+    if(WHIPS[a]&&t<a+.3){const p=(t-a)/.3;off=WHIPS[a]*Math.pow(1-p,3)*1100;blur=(1-p)*26;}
+    s._cam.style.transform=`translate(${(cx+off).toFixed(1)}px,${cy.toFixed(1)}px) scale(${sc.toFixed(4)})`;
+    s._cam.style.filter=blur>.5?`blur(${blur.toFixed(1)}px)`:'none';
+  });
+  document.getAnimations().forEach(a=>{a.pause();a.currentTime=t*1000;});
+  /* Léo */
+  LEOS.forEach(L=>{const lt=t-L.s0,o=L.o;
+    const x=o.x?key(o.x,lt):0, walking=o.x&&Math.abs(key(o.x,lt+.05)-key(o.x,lt-.05))>2;
+    const sw=walking?Math.sin(lt*13):0;
+    let hop=0;(o.hop||[]).forEach(h=>{const p=(lt-h)/.45;if(p>0&&p<1)hop=Math.sin(p*Math.PI)*70;});
+    L.el.style.transform=`translate(${x.toFixed(1)}px,${(-hop-Math.abs(sw)*8+Math.sin(lt*5+L.i)*3).toFixed(1)}px)`;
+    L.legs.forEach(g=>g.setAttribute('transform',`rotate(${(g.dataset.leg==='l'?1:-1)*sw*20})`));
+    L.arms.forEach(g=>{const kk=o.arms[g.dataset.arm];const base=kk?key(kk,lt):0;
+      g.setAttribute('transform',`rotate(${(base+(g.dataset.arm==='l'?-1:1)*sw*18+Math.sin(lt*3+(g.dataset.arm==='l'?0:2))*2).toFixed(1)})`)});
+    const tilt=(o.tilt?key(o.tilt,lt):0)+Math.sin(lt*2.2+L.i)*2.5;
+    L.head.setAttribute('transform',`rotate(${tilt.toFixed(2)} 150 236)`);
+    const m=step(o.mouth||[[0,'smile']],lt);L.m.forEach(g=>g.style.display=g.dataset.mouth===m?'':'none');
+    const e=step(o.eyes||[[0,'n']],lt);L.e.forEach(g=>g.style.display=g.dataset.eyes===e?'':'none');
+    const br=o.brow?step(o.brow,lt):(e==='side'?'side':e==='big'?'up':BROW[m]||'n');L.b.forEach(g=>g.style.display=g.dataset.brow===br?'':'none');
+    const bl=((lt+L.i*.9)%2.9);const blink=bl<.13&&e!=='happy';
+    L.ew.setAttribute('transform',blink?'translate(0,144) scale(1,.12) translate(0,-144)':'');
+  });
+  COUNTS.forEach(c=>{const p=clamp((t-c.s0-c.v[2])/c.v[3]);c.el.textContent=fmt(c.v[0]+(c.v[1]-c.v[0])*c.ez(p),c.f)});
+  STEPS.forEach(c=>{const lt=t-c.s0;let i=0;while(i+1<c.k.length&&lt>=c.k[i+1][0])i++;
+    const prev=i>0?c.k[i-1][1]:c.k[0][1];const p=clamp((lt-c.k[i][0])/(c.k[i][1]-prev>30?0.6:0.3));
+    c.el.textContent=fmt(prev+(c.k[i][1]-prev)*ease.out(p),c.f)});
+  /* floating UI: nothing ever sits still */
+  FLOATS.forEach(f=>{const A=f.big?9:6,R=f.big?.8:1.6;
+    f.el.style.translate=`0 ${(Math.sin(t*1.7+f.ph)*A).toFixed(1)}px`;f.el.style.rotate=`${(Math.sin(t*1.1+f.ph)*R).toFixed(2)}deg`;});
+  AMB.forEach(a=>{const x=((a.x-t*a.v)%2300+2300)%2300-200,y=a.y+Math.sin(t*.8+a.p)*30;
+    a.el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(t*a.v*.4).toFixed(1)}deg)`;});
+  $('#bug').style.opacity=(t>=9&&t<22)?1:0;
+  let wx=null;WIPES.forEach(b=>{if(t>b-.35&&t<b+.35)wx=(t-(b-.35))/.7});
+  if(wx===null){$('#w1').style.left=$('#w2').style.left='-3000px';}
+  else{const e=ease.inout(wx);const x=-2900+e*(1920+2900+300);$('#w1').style.left=x+'px';$('#w2').style.left=(x-260)+'px';}
+  let fl=0;FLASH.forEach(b=>{if(t>=b-.08&&t<b+.4)fl=t<b?(t-b+.08)/.08:1-(t-b)/.4});$('#flash').style.opacity=fl;
+}
+
+
+/* ---------------- rewind (VHS) ---------------- */
+const RW0=7.5,RW1=9.0,baseRender=render;
+function renderReel(t){
+  let src=t,rw=t>=RW0&&t<RW1,p=0;
+  if(rw){p=(t-RW0)/(RW1-RW0);src=Math.max(.2,RW0-.05-ease.inout(Math.min(1,p/.85))*7.3);}
+  baseRender(src);
+  const v=$('#vhs');v.style.display=rw?'block':'none';
+  if(rw){const s=Math.floor(src),fr=Math.floor((src%1)*30);
+    $('#vtc').textContent='00:00:'+String(s).padStart(2,'0')+':'+String(fr).padStart(2,'0');
+    $('#vband').style.top=(((p*4)%1)*2100-150)+'px';
+    $('#stage').style.filter=`saturate(1.5) contrast(1.08) hue-rotate(${(Math.sin(t*37)*8).toFixed(1)}deg)`;
+    v.querySelector('.vt').style.transform=`translateX(${(Math.sin(t*93)*5).toFixed(1)}px)`;
+    const q=clamp((p-.45)/.15);const qe=v.querySelector('.vq');qe.style.opacity=q;qe.style.transform=`scale(${(.4+.6*ease.out(q)).toFixed(3)}) rotate(-3deg)`;
+  } else $('#stage').style.filter='none';
+}
+window.render=renderReel;window.DURATION=26;
+const qs=new URLSearchParams(location.search);
+document.fonts.ready.then(()=>{renderReel(+(qs.get('t')||0));window.READY=true;});
+</script>
+</body>
+</html>

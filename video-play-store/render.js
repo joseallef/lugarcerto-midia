@@ -6,8 +6,9 @@ const path = require('path'); const fs = require('fs');
   const stills = args[0] === '--stills'; if (stills) args.shift();
   const out = args[0]; fs.mkdirSync(out, { recursive: true });
   const b = await chromium.launch();
-  const p = await b.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
-  await p.goto('file://' + path.resolve(__dirname, 'video.html'));
+  const W = +(process.env.W || 1920), H = +(process.env.H || 1080);
+  const p = await b.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
+  await p.goto('file://' + path.resolve(__dirname, process.env.PAGE || 'video.html'));
   await p.waitForFunction(() => window.READY);
   const times = stills ? args[1].split(',').map(Number) : (() => {
     const fps = +(args[1] || 30), t0 = +(args[2] || 0), t1 = +(args[3] || 60); const a = [];
