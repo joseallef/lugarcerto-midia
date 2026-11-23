@@ -4,6 +4,12 @@ const path = require('path');
 const { personagem: P } = require('./personagens');
 const render = require('./render');
 
+const fs = require('fs');
+const QR = fs.readFileSync(path.join(__dirname, 'qr-semana48.svg'), 'utf8').replace('<svg', '<svg width="100%" height="100%"');
+// Cartão com QR Code para o site/app (Instagram não tem link clicável na legenda)
+const qr = (css, vertical = false) => vertical
+  ? `<div class="abs" style="${css};width:190px;background:#fff;border:4px solid var(--ink);border-radius:22px;padding:16px;text-align:center;box-shadow:6px 6px 0 var(--ink)"><div style="width:150px;height:150px;margin:0 auto">${QR}</div><div style="font-weight:800;font-size:22px;margin-top:10px;line-height:1.1">aponte a câmera</div><div style="font-size:18px;font-weight:600;margin-top:4px">e baixe grátis</div></div>`
+  : `<div class="abs" style="${css};display:flex;gap:16px;align-items:center;background:#fff;border:4px solid var(--ink);border-radius:22px;padding:14px 20px 14px 14px;box-shadow:6px 6px 0 var(--ink)"><div style="width:124px;height:124px;flex:none">${QR}</div><div style="color:var(--ink)"><div style="font-weight:800;font-size:26px;line-height:1.1">aponte a câmera</div><div style="font-size:20px;font-weight:600;margin-top:6px;line-height:1.2">e baixe grátis<br>lugarcerto.tec.br</div></div></div>`;
 const OUT = path.join(__dirname, '..', 'semana-48');
 const W = 1080, H = 1350;
 
@@ -107,10 +113,11 @@ const c1s4 = page('var(--tomato)', `
   <div class="abs" style="left:80px;top:620px;width:640px;display:flex;gap:24px">${pacote('5 KG', '44,90', '8,98', false)}${pacote('1 KG', '8,49', '8,49', true)}</div>
   <div class="abs" style="left:80px;top:1010px;width:560px;font-size:28px;font-weight:600;line-height:1.3">Embalagem maior nem sempre sai mais barata. <span style="opacity:.7">(valores ilustrativos)</span></div>
   <div class="abs" style="left:0;right:0;bottom:0;height:200px;background:var(--ink);color:#fff;padding:36px 80px">
-    <div style="font-size:32px;font-weight:700;width:640px;line-height:1.25">Chegue no dia 27 com <span style="color:var(--butter)">seus preços na mão.</span></div>
-    <div style="font-size:24px;margin-top:12px;opacity:.85">14 dias de Premium grátis, sem cartão · link na bio</div>
+    <div style="font-size:28px;font-weight:700;width:370px;line-height:1.25">Chegue no dia 27 com <span style="color:var(--butter)">seus preços na mão.</span></div>
+    <div style="font-size:20px;margin-top:10px;opacity:.85;width:370px">14 dias de Premium grátis, sem cartão</div>
   </div>
-  ${pers('cida', { bracoD: 'aceno', bracoE: 'cintura', expressao: 'feliz' }, 'left:740px;top:740px;width:300px;height:600px')}
+  ${qr('left:460px;bottom:22px')}
+  ${pers('cida', { bracoD: 'aceno', bracoE: 'cintura', expressao: 'feliz' }, 'left:800px;top:700px;width:280px;height:560px')}
 `);
 
 // ---------- 2. Conversa (Bia & Rafa) ----------
@@ -136,7 +143,7 @@ const chat = page('var(--lilac)', `
   </div>
   ${pers('bia', { bracoD: 'celular', prop: 'celular', expressao: 'piscada' }, 'left:30px;top:1060px;width:300px;height:600px')}
   ${pers('rafa', { bracoD: 'aceno', propE: 'sacola', expressao: 'surpresa' }, 'left:760px;top:1060px;width:300px;height:600px')}
-  <div class="abs" style="left:340px;top:1150px;width:400px;text-align:center;font-size:26px;font-weight:600;line-height:1.3">Sem áudio, sem print.<br>No Premium, 1 pessoa usa junto.</div>
+  ${qr('left:345px;top:1140px')}
 `);
 
 // ---------- 3. Nota fiscal / checklist ----------
@@ -165,6 +172,7 @@ const nota = page('var(--tomato)', `
       <div style="margin-top:26px;display:flex;gap:4px;height:56px">${Array.from({ length: 52 }, (_, i) => `<span style="flex:${[1, 2, 1, 3, 1, 1, 2][i % 7]};background:${i % 2 ? 'transparent' : 'var(--ink)'}"></span>`).join('')}</div>
     </div>
   </div>
+  ${qr('left:850px;top:220px', true)}
   ${pers('cida', { bracoD: 'segura', prop: 'caneta', bracoE: 'cintura', expressao: 'feliz' }, 'left:770px;top:800px;width:290px;height:580px')}
   <div class="abs" style="left:840px;top:620px;transform:rotate(8deg);width:190px;height:190px;border-radius:50%;background:var(--butter);border:4px solid var(--ink);display:grid;place-items:center;text-align:center;font-weight:800;font-size:28px;line-height:1.1">mande pra<br>quem vai<br>junto</div>
 `);
@@ -179,7 +187,8 @@ const hoje = page('var(--navy)', `
   <div class="abs" style="left:80px;top:680px;width:560px;color:#fff">
     ${[['Abre a lista', 'nada de ir de cabeça'], ['Abre o histórico', 'o “de” do cartaz não é o que você pagava'], ['Escaneia a nota', 'ali no caixa, antes de sair']].map(([a, b], i) => `<div style="display:flex;gap:22px;align-items:flex-start;margin-bottom:30px"><span class="h" style="flex:none;width:64px;height:64px;border-radius:50%;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-size:38px">${i + 1}</span><div><div style="font-size:40px;font-weight:800">${a}</div><div style="font-size:26px;opacity:.8;margin-top:4px">${b}</div></div></div>`).join('')}
   </div>
-  ${pers('teo', { bracoD: 'celular', prop: 'celular', bracoE: 'cintura', expressao: 'surpresa' }, 'left:660px;top:640px;width:340px;height:680px')}
+  ${qr('left:830px;top:450px', true)}
+  ${pers('teo', { bracoD: 'celular', prop: 'celular', bracoE: 'cintura', expressao: 'surpresa' }, 'left:660px;top:690px;width:340px;height:680px')}
   <div class="abs" style="left:0;right:0;bottom:0;height:160px;background:#0C1A36;border-top:10px solid #C9A66B"></div>
   <div class="abs" style="left:80px;bottom:40px;display:flex;gap:22px">${etq('9,90', 'LEITE 1 L', '#fff')}${etq('19,90', 'CAFÉ 500 G', 'var(--butter)')}${etq('8,49', 'ARROZ 1 KG', '#fff')}</div>
   <div class="abs" style="left:80px;top:1080px;color:var(--lime);font-size:24px;font-weight:600">Histórico e nota fiscal: Premium · 14 dias grátis, sem cartão</div>
@@ -197,11 +206,12 @@ const split = page('var(--cream)', `
   <div class="abs" style="left:490px;top:625px;width:100px;height:100px;border-radius:50%;background:var(--butter);border:4px solid var(--ink);display:grid;place-items:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:40px;z-index:2">vs</div>
   <div class="abs mono" style="left:80px;top:760px;font-size:24px;letter-spacing:.12em;color:#fff">PLANO B</div>
   <div class="abs h" style="left:80px;top:800px;font-size:72px;width:560px;color:#fff">13º caiu. Já sei<br>pra onde vai.</div>
-  <div class="abs card" style="left:80px;top:990px;width:560px;padding:26px 30px">
+  <div class="abs card" style="left:80px;top:990px;width:400px;padding:26px 30px">
     ${[['Mercado do mês', 45, 'var(--green)'], ['Contas', 35, 'var(--butter)'], ['Guardar', 20, 'var(--lilac)']].map(([a, p, c]) => `<div style="margin:6px 0 14px"><div style="display:flex;justify-content:space-between;font-size:26px;font-weight:700"><span>${a}</span><span>${p}%</span></div><div style="height:18px;background:#EEE8DD;border-radius:9px;margin-top:8px"><div style="width:${p * 2}%;height:100%;background:${c};border-radius:9px;border:2px solid var(--ink)"></div></div></div>`).join('')}
     <div class="mono" style="font-size:18px;opacity:.55">exemplo ilustrativo</div>
   </div>
   ${pers('teo', { bracoD: 'celular', prop: 'celular', bracoE: 'cintura', expressao: 'piscada' }, 'left:700px;top:745px;width:300px;height:600px')}
+  ${qr('left:500px;top:985px', true)}
   <div class="abs" style="right:60px;top:700px;transform:rotate(4deg)"><span class="chip" style="background:var(--lime);font-size:24px">grátis, pelo site</span></div>
 `);
 
@@ -212,8 +222,10 @@ const cardPers = (letra, id, o, titulo, sub, bg) => `<div style="background:${bg
   <div style="position:absolute;left:26px;bottom:26px;width:210px"><div class="h" style="font-size:42px;line-height:1">${titulo}</div><div style="font-size:22px;font-weight:600;margin-top:8px;line-height:1.25">${sub}</div></div>
 </div>`;
 const quiz = page('var(--cream)', `
-  <div class="abs" style="left:80px;top:64px;right:80px;display:flex;justify-content:space-between;align-items:center">${logo()}<span class="chip" style="background:var(--butter)">comenta a letra 👇</span></div>
-  <div class="abs h" style="left:80px;top:150px;font-size:108px;width:940px">Qual é você<br><span class="serif" style="font-size:122px">no mercado?</span></div>
+  <div class="abs" style="left:80px;top:64px;right:80px;display:flex;justify-content:space-between;align-items:center">${logo()}</div>
+  <div class="abs" style="right:70px;top:300px;transform:rotate(4deg)"><span class="chip" style="background:var(--butter)">comenta a letra 👇</span></div>
+  ${qr('right:80px;top:30px')}
+  <div class="abs h" style="left:80px;top:200px;font-size:100px;width:940px">Qual é você<br><span class="serif" style="font-size:112px">no mercado?</span></div>
   <div class="abs" style="left:80px;top:420px;width:920px;display:grid;grid-template-columns:1fr 1fr;gap:28px">
     ${cardPers('A', 'cida', { bracoD: 'segura', prop: 'nota', expressao: 'desconfiada' }, 'Dona Cida', 'sabe o preço de tudo de cabeça', 'var(--lilac)')}
     ${cardPers('B', 'teo', { bracoD: 'aceno', propE: 'sacola', expressao: 'surpresa' }, 'Téo', 'foi pelo pão, voltou sem o pão', 'var(--butter)')}
