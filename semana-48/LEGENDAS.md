@@ -8,13 +8,28 @@
   - **Bia & Rafa**: o casal. Ela faz a lista, ele liga do corredor. Falam de *lista compartilhada*.
 - **Acabou o fundo verde em todo post.** Cada formato tem uma paleta própria: cartaz amarelo, nota fiscal, chat, editorial azul-marinho, antes × depois e quiz.
 - **Tipografia nova**: Bricolage Grotesque com destaques em serifa itálica (Instrument Serif) e DM Mono na "nota fiscal".
-- Fonte das artes: `design/gerar-semana-48.js` e `design/personagens.js` (`node design/gerar-semana-48.js` gera tudo de novo).
+- **Personagens refinados com base em pesquisa de design de personagem**:
+  - olhos maiores com íris e brilho ("baby schema": Lorenz; Glocker et al., 2009);
+  - sorriso que chega aos olhos (sorriso de Duchenne, lido como genuíno);
+  - sobrancelhas expressivas;
+  - formas arredondadas (Bar & Neta, 2006: curvas são preferidas e lidas como amigáveis);
+  - luz e sombra na pele, no cabelo e na roupa;
+  - elenco diverso, parecido com o público brasileiro.
+- **QR Code em todas as artes** (Instagram não tem link clicável na legenda). Ele leva para `lugarcerto.tec.br/baixar` com UTM `utm_medium=qrcode&utm_campaign=semana48`.
+- **Stories animados (MP4, 12 s)** em `stories/`, com os personagens e um painel final com QR Code. Servem para Instagram, Facebook e, quando conectado, TikTok.
+- Fonte das artes, em `design/`:
+  - `personagens.js`: o elenco;
+  - `gerar-semana-48.js`: feed;
+  - `gerar-comedia-48.js`: carrossel de comédia;
+  - `gerar-stories-48.js`: Stories;
+  - `gerar-pins-48.js`: Pinterest.
 
 ## Estratégia de atração (funil)
 
 | Dia | Formato | Etapa do funil | Gancho / gatilho | CTA |
 |---|---|---|---|---|
 | Seg 23 | Carrossel cartaz (Cida) | Topo → meio | Curiosidade + medo de cair em desconto falso | Salvar para o dia 27 |
+| Ter 24 | Carrossel "Black Friday no mercado: uma comédia em 4 atos" (Téo & Cida) | Topo | Humor de situação + 1 insight útil por slide (ponta de gôndola, altura dos olhos, leve 3 pague 2, de/por) | Salvar e compartilhar |
 | Qua 25 | Chat (Bia & Rafa) | Topo | Identificação ("é a minha casa") | **Marcar** quem vai junto (alcance orgânico) |
 | Qui 26 | Nota fiscal / checklist (Cida) | Meio | Utilidade: post feito para salvar | **Salvar + enviar** para quem vai junto |
 | Sex 27 | Editorial "HOJE" (Téo) | Fundo | Urgência real (é o dia) | Baixar / testar 14 dias grátis |
@@ -22,6 +37,28 @@
 | Dom 29 | Quiz "Qual é você?" (elenco) | Topo | Autoidentificação, resposta fácil (só uma letra) | Comentar A/B/C/D (o engajamento puxa o alcance da semana seguinte) |
 
 Regras usadas em todas as peças: o gancho entra nos primeiros 2 segundos (título grande com uma pergunta ou cena), há um único CTA por post, a oferta vem sem risco ("14 dias grátis, sem cartão") e nada de prova social inventada.
+
+---
+
+## Ter 24/11 · 18h · Instagram carrossel (6 imagens `ter-24-comedia-1..6.png`)
+
+Black Friday no mercado: uma comédia em 4 atos 🎭🛒
+
+Estrelando o Téo, que acredita em todo cartaz. Com participação da Dona Cida, que não acredita em nenhum.
+
+Ato 1: a ponta de gôndola
+Ato 2: a altura dos olhos
+Ato 3: o "leve 3, pague 2"
+Ato 4: o "de / por"
+
+Cada ato traz uma pegadinha real do mercado e o jeito de escapar dela. Spoiler: a Dona Cida tem o histórico de preço de cada nota fiscal no Lugar Certo, e por isso ninguém passa a perna nela.
+
+Em qual ato você já caiu? Conta aqui 👇 E manda pro seu Téo.
+
+📲 Aponte a câmera pro QR Code do último slide ou toque no link da bio
+🎁 14 dias de Premium grátis, sem cartão
+
+#blackfriday #mercado #economiadomestica #listadecompras #humor #supermercado
 
 ---
 
