@@ -2,7 +2,7 @@
 // Humor de situação + um insight prático por ato. Layout limpo/premium.
 // Uso: node design/gerar-comedia-48.js
 const fs = require('fs'), path = require('path');
-const { personagem: P } = require('./personagens');
+const { personagem: P } = require('./personagens-v3');
 const render = require('./render');
 
 const OUT = path.join(__dirname, '..', 'semana-48');

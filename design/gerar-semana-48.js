@@ -1,7 +1,7 @@
 // Gera as artes da semana 48 (23–29/11) com o novo elenco e layouts variados.
 // Uso: node design/gerar-semana-48.js
 const path = require('path');
-const { personagem: P } = require('./personagens');
+const { personagem: P } = require('./personagens-v3');
 const render = require('./render');
 
 const fs = require('fs');

@@ -3,7 +3,7 @@
 // Uso: node design/gerar-stories-48.js [filtro]
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const { chromium } = require('playwright');
-const { personagem: P } = require('./personagens');
+const { personagem: P } = require('./personagens-v3');
 
 const OUT = path.join(__dirname, '..', 'semana-48', 'stories');
 const W = 1080, H = 1920, FPS = 30, DUR = 12;
