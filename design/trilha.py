@@ -205,7 +205,7 @@ if __name__ == '__main__':
         mp4 = os.path.join(base, f'{nome}.mp4')
         tmp = mp4 + '.tmp.mp4'
         subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', mp4, '-i', wav, '-map', '0:v', '-map', '1:a', '-c:v', 'copy',
-                        '-c:a', 'aac', '-b:a', '160k', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-shortest', '-movflags', '+faststart', tmp], check=True)
+                        '-c:a', 'aac', '-b:a', '160k', '-ar', '48000', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-shortest', '-movflags', '+faststart', tmp], check=True)
         os.replace(tmp, mp4)
         os.remove(wav)
         print('ok', nome)
