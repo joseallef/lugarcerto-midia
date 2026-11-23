@@ -27,6 +27,7 @@ body{width:${W}px;height:${H}px;overflow:hidden;font-family:Inter,sans-serif;col
 @keyframes up{0%{transform:translateY(160px);opacity:0}100%{transform:translateY(0);opacity:1}}
 @keyframes down{0%{transform:translateY(-900px) rotate(-14deg)}55%{transform:translateY(30px) rotate(6deg)}75%{transform:translateY(-10px) rotate(-3deg)}100%{transform:translateY(0) rotate(-4deg)}}
 @keyframes fromL{0%{transform:translateX(-700px)}70%{transform:translateX(30px)}100%{transform:translateX(0)}}
+@keyframes entra{0%{transform:translateX(1150px)}70%{transform:translateX(-30px)}100%{transform:translateX(0)}}
 @keyframes fromR{0%{transform:translateX(700px)}70%{transform:translateX(-30px)}100%{transform:translateX(0)}}
 @keyframes out{to{opacity:0;transform:scale(.9)}}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
@@ -161,7 +162,7 @@ const s5 = page('var(--tomato)', `
   ${a('left:60px;top:780px;width:960px', `${pop(1.6)}, ${out(5.0)}`, `<div class="serif" style="font-size:110px;color:#fff;text-align:center">“Agora dá pra tudo.”</div>`)}
   ${a('left:60px;top:960px;width:960px', `${pop(3.0)}, ${out(5.0)}`, `<div class="chip" style="font-size:44px">dia 15 de dezembro: 🫠</div>`)}
   ${a('left:340px;top:1150px;width:400px;height:800px', `up .6s .6s both, ${out(5.0)}`, `<div style="animation:bob .7s ease-in-out infinite">${P('teo', { bracoD: 'aceno', propE: 'sacola', expressao: 'feliz' })}</div>`)}
-  <div class="abs" style="inset:0;background:var(--green);animation:fromR .7s 5.0s cubic-bezier(.2,1,.4,1) both">
+  <div class="abs" style="inset:0;background:var(--green);animation:entra .7s 5.0s cubic-bezier(.2,1,.4,1) both">
     <div class="abs mono" style="left:60px;top:250px;font-size:34px;color:#fff;letter-spacing:.12em">PLANO B</div>
     <div class="abs h" style="left:60px;top:310px;font-size:120px;color:#fff;width:960px">13º caiu.<br>Já sei pra<br>onde vai.</div>
     <div class="abs card" style="left:60px;top:740px;width:620px;padding:36px 40px">
