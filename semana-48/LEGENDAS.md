@@ -14,7 +14,7 @@
 
 | Dia | Formato | Etapa do funil | Gancho / gatilho | CTA |
 |---|---|---|---|---|
-| Seg 24 | Carrossel cartaz (Cida) | Topo → meio | Curiosidade + medo de cair em desconto falso | Salvar para o dia 27 |
+| Seg 23 | Carrossel cartaz (Cida) | Topo → meio | Curiosidade + medo de cair em desconto falso | Salvar para o dia 27 |
 | Qua 25 | Chat (Bia & Rafa) | Topo | Identificação ("é a minha casa") | **Marcar** quem vai junto (alcance orgânico) |
 | Qui 26 | Nota fiscal / checklist (Cida) | Meio | Utilidade: post feito para salvar | **Salvar + enviar** para quem vai junto |
 | Sex 27 | Editorial "HOJE" (Téo) | Fundo | Urgência real (é o dia) | Baixar / testar 14 dias grátis |
@@ -25,7 +25,7 @@ Regras usadas em todas as peças: o gancho entra nos primeiros 2 segundos (títu
 
 ---
 
-## Seg 24/11 · 18h · Instagram carrossel (4 imagens `seg-24-carrossel-1..4.png`)
+## Seg 23/11 · 18h · Instagram carrossel (4 imagens `seg-23-carrossel-1..4.png`)
 
 Esse "de R$ 24,90 por R$ 19,90" é desconto de verdade? 🤔
 

@@ -223,7 +223,7 @@ const quiz = page('var(--cream)', `
 `);
 
 const jobs = [
-  ['seg-24-carrossel-1.png', c1s1], ['seg-24-carrossel-2.png', c1s2], ['seg-24-carrossel-3.png', c1s3], ['seg-24-carrossel-4.png', c1s4],
+  ['seg-23-carrossel-1.png', c1s1], ['seg-23-carrossel-2.png', c1s2], ['seg-23-carrossel-3.png', c1s3], ['seg-23-carrossel-4.png', c1s4],
   ['qua-25-lista-da-casa.png', chat], ['qui-26-checklist-black-friday.png', nota], ['sex-27-hoje-black-friday.png', hoje],
   ['sab-28-13-salario.png', split], ['dom-29-qual-e-voce.png', quiz],
 ].map(([f, html]) => ({ html, out: path.join(OUT, f), w: W, h: H }));
