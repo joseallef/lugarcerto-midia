@@ -9,12 +9,13 @@ const OUT = path.join(__dirname, '..', 'semana-48', 'faixa');
 fs.mkdirSync(OUT, { recursive: true });
 
 const FONTES = `<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Pacifico&family=Nunito:wght@700;800&display=block" rel="stylesheet">`;
-const NAVY = '#24427A', CORAL = '#E8604C', VERDE = '#3E8E4E', ROSA = '#E4407A';
+// Paleta da marca: verdes Lugar Certo + amarelo de destaque
+const NAVY = '#0E4D32', CORAL = '#17A05D', VERDE = '#0E4D32', ROSA = '#138A55';
 
 // Ramo de folhinhas (decoração da faixa)
 const ramo = (cor, flip = false) => `<svg width="70" height="40" viewBox="0 0 70 40" style="${flip ? 'transform:scaleX(-1)' : ''}"><path d="M4 30 Q34 26 66 8" stroke="${cor}" stroke-width="3" fill="none" stroke-linecap="round"/>${[[16, 26, -30], [28, 22, -40], [40, 17, -45], [52, 12, -50]].map(([x, y, r]) => `<ellipse cx="${x}" cy="${y - 6}" rx="7" ry="3.6" transform="rotate(${r} ${x} ${y - 6})" fill="${cor}"/><ellipse cx="${x + 2}" cy="${y + 5}" rx="7" ry="3.6" transform="rotate(${r + 70} ${x + 2} ${y + 5})" fill="${cor}"/>`).join('')}</svg>`;
 const brilho = (cor) => `<svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 1 L14 10 L23 12 L14 14 L12 23 L10 14 L1 12 L10 10 Z" fill="${cor}"/></svg>`;
-const coracao = `<svg width="120" height="92" viewBox="0 0 120 92"><defs><linearGradient id="gco" x1="0" x2="1"><stop offset="0" stop-color="#F27A8A"/><stop offset="1" stop-color="#E4407A"/></linearGradient></defs><path d="M60 88 C20 60 0 42 0 22 C0 8 12 0 26 0 C40 0 52 8 60 20 C68 8 80 0 94 0 C108 0 120 8 120 22 C120 42 100 60 60 88 Z" fill="url(#gco)"/></svg>`;
+const coracao = `<svg width="120" height="92" viewBox="0 0 120 92"><defs><linearGradient id="gco" x1="0" x2="1"><stop offset="0" stop-color="#FFD94A"/><stop offset="1" stop-color="#F2B825"/></linearGradient></defs><path d="M60 88 C20 60 0 42 0 22 C0 8 12 0 26 0 C40 0 52 8 60 20 C68 8 80 0 94 0 C108 0 120 8 120 22 C120 42 100 60 60 88 Z" fill="url(#gco)"/></svg>`;
 
 // Faixa em unidades de 1000 px de largura (escala via CSS transform)
 const faixa = () => `
@@ -49,14 +50,14 @@ const impressao = `<!doctype html><html><head><meta charset="utf-8">${FONTES}<st
 
 // 2) Post 1080x1350: cenário de loja com flores + Bia segurando a faixa
 const flor = (x, y, r, c) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}"/><circle cx="${x}" cy="${y}" r="${r * 0.35}" fill="#F6D27A"/>`;
-const flores = (ox, oy, n, seed) => { let s = ''; let k = seed; for (let i = 0; i < n; i++) { k = (k * 9301 + 49297) % 233280; const a = k / 233280; k = (k * 9301 + 49297) % 233280; const b = k / 233280; s += flor(ox + a * 260, oy + b * 300, 12 + (i % 3) * 5, ['#F4B6C2', '#F7D3DA', '#EE8FA6', '#FBE3E8', '#E9A0B4'][i % 5]); } return s; };
-const folhas = (ox, oy) => Array.from({ length: 9 }, (_, i) => `<path d="M${ox} ${oy} Q${ox - 120 + i * 30} ${oy - 160 - (i % 3) * 30} ${ox - 160 + i * 40} ${oy - 260 + (i % 2) * 40}" stroke="#3F7A4A" stroke-width="10" fill="none" stroke-linecap="round"/>`).join('');
+const flores = (ox, oy, n, seed) => { let s = ''; let k = seed; for (let i = 0; i < n; i++) { k = (k * 9301 + 49297) % 233280; const a = k / 233280; k = (k * 9301 + 49297) % 233280; const b = k / 233280; s += flor(ox + a * 260, oy + b * 300, 12 + (i % 3) * 5, ['#FFFFFF', '#FFF4C2', '#FFD94A', '#F4F1E8', '#FFE680'][i % 5]); } return s; };
+const folhas = (ox, oy) => Array.from({ length: 9 }, (_, i) => `<path d="M${ox} ${oy} Q${ox - 120 + i * 30} ${oy - 160 - (i % 3) * 30} ${ox - 160 + i * 40} ${oy - 260 + (i % 2) * 40}" stroke="#0B4A2E" stroke-width="10" fill="none" stroke-linecap="round"/>`).join('');
 
 const post = `<!doctype html><html><head><meta charset="utf-8">${FONTES}
 <style>*{margin:0;box-sizing:border-box}body{width:1080px;height:1350px;overflow:hidden;position:relative;background:#F1EBE2}.abs{position:absolute}</style></head><body>
-  <div class="abs" style="left:0;top:0;right:0;height:1010px;background:linear-gradient(#F4EFE7,#ECE4D8)"></div>
+  <div class="abs" style="left:0;top:0;right:0;height:1010px;background:linear-gradient(#1FA463,#0F6B43)"></div>
   <div class="abs" style="left:0;right:0;top:1010px;bottom:0;background:#D9D4CC;background-image:linear-gradient(90deg,#0000000f 2px,transparent 2px),linear-gradient(#0000000f 2px,transparent 2px);background-size:180px 120px"></div>
-  <div class="abs" style="left:0;top:120px;width:300px;height:520px;background:linear-gradient(#8A5A3C,#6E4630);border-radius:0 10px 10px 0"></div>
+  <div class="abs" style="left:0;top:120px;width:300px;height:520px;background:linear-gradient(#0E5C3A,#0B4A2E);border-radius:0 10px 10px 0"></div>
   <svg class="abs" style="left:0;top:0" width="1080" height="1350">
     ${folhas(150, 900)}${folhas(140, 1000)}
     ${flores(0, 600, 60, 3)}${flores(40, 780, 50, 11)}
