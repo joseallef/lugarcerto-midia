@@ -60,7 +60,7 @@ const fim = (t0, titulo, sub) => cena(t0, null, 'var(--ink)', `
 
 const dado = (t0, t1, bg, num, txt, fonte, cor = '#fff') => cena(t0, t1, bg, `
   ${a('left:60px;top:300px', pop(t0 + .05), `<div class="mono" style="font-size:30px;color:${cor};opacity:.8">E NÃO É SÓ A BIA:</div>`)}
-  ${a('left:40px;top:380px;width:1000px', `slam .45s ${t0 + .15}s cubic-bezier(.2,1.2,.4,1) both`, `<div class="h" style="font-size:330px;color:${cor};letter-spacing:-.06em">${num}</div>`)}
+  ${a('left:40px;top:380px;width:1000px', `slam .45s ${t0 + .15}s cubic-bezier(.2,1.2,.4,1) both`, `<div class="h" style="font-size:${num.length > 4 ? 230 : 330}px;color:${cor};letter-spacing:-.06em;white-space:nowrap">${num}</div>`)}
   ${a('left:60px;top:780px;width:960px', up(t0 + .5), `<div style="font-size:64px;font-weight:800;line-height:1.1;color:${cor}">${txt}</div>`)}
   ${a('left:60px;top:1200px;width:960px', up(t0 + .8), `<div class="mono" style="font-size:24px;color:${cor};opacity:.7">FONTE: ${fonte}</div>`)}`);
 
@@ -128,9 +128,9 @@ const ep3 = `<!doctype html><html><head><meta charset="utf-8">${CSS}</head><body
   ${cena(7.0, 11.6, 'var(--paper)', `
     ${a('left:60px;top:250px;width:960px', up(7.1), `<div class="h" style="font-size:92px">Compre o que<br><span class="serif" style="font-size:100px">a casa realmente usa.</span></div>`)}
     ${celular('left:260px;top:560px', { titulo: `<div class="h" style="font-size:44px;margin-top:6px">Próxima lista</div><div style="font-size:24px;opacity:.85;margin-top:6px">montada a partir da sua última nota</div>`, corpo:
-      item('Iogurte', 'você comprou 6 · usou 3', `<b style="font-size:28px">3 ✓</b>`, 8.0) +
-      item('Alface', 'comprou 2 · usou 1', `<b style="font-size:28px">1 ✓</b>`, 8.3) +
-      item('Queijo 500 g', 'durou o mês', `<b style="font-size:28px">1 ✓</b>`, 8.6) +
+      item('Iogurte', 'última compra: 6 un.', `<b style="font-size:28px">6 → 3</b>`, 8.0) +
+      item('Alface', 'última compra: 2 un.', `<b style="font-size:28px">2 → 1</b>`, 8.3) +
+      item('Queijo 500 g', 'última compra: 1 un.', `<b style="font-size:28px">1 ✓</b>`, 8.6) +
       `<div style="margin-top:26px;background:#E8F6EE;border-radius:20px;padding:20px;font-size:26px;font-weight:600;animation:${pop(9.1)}">Ajuste as quantidades antes de sair de casa.</div>` }, 7.3)}
     ${a('left:640px;top:1340px;width:400px;height:800px', up(9.4), `<div style="animation:bob 1.3s ease-in-out infinite">${P('cida', { bracoD: 'aceno', bracoE: 'cintura', expressao: 'piscada' })}</div>`)}
     ${a('left:60px;top:1640px;width:560px', pop(9.8), `<div style="background:var(--ink);color:#fff;border-radius:28px;padding:22px 26px;font-size:30px;font-weight:600">A nota da última compra vira a próxima lista.</div>`)}
